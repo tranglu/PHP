@@ -1,0 +1,12 @@
+td,tr{
+width:50px !important;
+height:50px !important; 
+border: 1px solid black;
+}
+.poke{
+width: 50px !important; 
+height: 50px !important;
+top: 0;
+left:0;
+ z-index: 0;
+}
