@@ -31,20 +31,6 @@
 
 <?php echo $layout_area3 ?>
 </div>
-<!-- <div class="container-fluid bg-grey">
-<div class="row">
-	<div class="col-lg-4">
-			<span class="glyphicon glyphicon-globe logo slideanim"></span>
-	</div>
-	<div class="col-lg-8">
-		<h2>Tin tôi đi, cuộc sống là những món quà</h2><br>
-		<h4> Cuộc sống là món quà tuyệt vời nhất mỗi chúng ta có được</h4>
-		<p><strong>Ở cái tuổi hai mươi mấy </strong>con người ta cô đơn lắm, cô đơn đến nỗi trở thành một con người khác, lạnh lùng, ít nói, ít cười, dường như chẳng còn là mình nữa. Bởi vì ngoài hai mươi, con người ta trưởng thành, phải gánh vác những trọng trách, phải mưu sinh để tồn tại.</p>
-		<p><strong>Ở cái tuổi hai mươi mấy</strong> con người ta cần rất nhiều va chạm.</p>
-	</div>
-</div>
-</div> -->
-<!-- dịch vụ-->
 
 
 <div id="map" class="container-fluid">

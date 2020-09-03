@@ -1,5 +1,5 @@
 <?php 
-if(defined("key")==false) header("location:../../index.php");;
+if(defined("key")==false) header("location:../../index.php");
 $temp="
  <div class='container'>
 		<div class='navbar-header'>

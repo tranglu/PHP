@@ -56,6 +56,10 @@ $htmlDMS="
 				";
 while($dongDL1=mysqli_fetch_array($datasach,MYSQLI_ASSOC))
 {
+	echo "<pre>";
+		var_dump($dongDL1);
+		echo "</pre>";
+# lấy sách từ SQL
 	$ids=$dongDL1["IDS"];
 	$tenS=$dongDL1["TenSach"];
 	$linkhinh=$dongDL1["URLHinh"];
@@ -70,7 +74,7 @@ while($dongDL1=mysqli_fetch_array($datasach,MYSQLI_ASSOC))
 	";
 }
 }
-# lấy sách từ SQL
+		
 	/*$ketnoi=mysqli_connect($server,$dblogin,$dbpass,$dbname,3308);
 if (mysqli_connect_errno()==true) {
 	$msg=mysqli_connect_error();

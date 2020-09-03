@@ -1,12 +1,10 @@
 <?php 
 include_once("config/database.php");
  ?>
-
  <?php 
 
 #lấy dữ liệu thể loại sách từ BD
 #kết nối vào csdl
-// $ketnoi = new mysqli($server,$dblogin,$dbpass,$dbname,3308);
 $ketnoi=mysqli_connect($server,$dblogin,$dbpass,$dbname,3308);
 if (mysqli_connect_errno()==true) {
 	$msg=mysqli_connect_error();
@@ -23,14 +21,6 @@ $htmlDMH="
 				";
 while($dongDL1=mysqli_fetch_array($data,MYSQLI_ASSOC))
 {
-
-	// echo "<hr>";
-	// echo __METHOD__.'</br>';
-	// echo "<pre>";
-	// var_dump($dongDL1);
-	// echo "</pre>";
-	// echo "<hr>";
-	// die;
 
 	$idh=$dongDL1["PID"];
 	$tenhinh=$dongDL1["TenHinhGhep"];

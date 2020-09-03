@@ -1,7 +1,7 @@
 <?php 
 include_once("config/database.php");
 
-//if(defined("key")==false) header("location:../../index.php");
+if(defined("key")==false) header("location:../../index.php");
 $ketnoi=mysqli_connect($server,$dblogin,$dbpass,$dbname,3308);
 if (mysqli_connect_errno()==true) {
 	$msg=mysqli_connect_error();
@@ -20,9 +20,8 @@ if (mysqli_connect_errno()==true) {
 	}
 	#người chơi
 	$id=$_SESSION['LoginId'];
-			echo "<pre>";
-			var_dump($id);
-			echo "</pre>";
+
+
 	# cập nhật vị trí
 	if ($_POST){		
 		$sql="select* from nguoichoi where Id='$id'";
@@ -44,25 +43,36 @@ if (mysqli_connect_errno()==true) {
 		}
 		$sqlupdate = "UPDATE `nguoichoi` SET `ToaDoX` = '$toadoxmoi', `ToaDoY` = '$toadoymoi' WHERE `nguoichoi`.`Id` = $id;";
 		$run = mysqli_query($ketnoi,$sqlupdate);
-	}
-	$sql="select* from nguoichoi where Id='$id'";
-	$data=mysqli_query($ketnoi,$sql);
-	$player=mysqli_fetch_array($data,MYSQLI_ASSOC);
+	
+		$sql="select* from nguoichoi where Id='$id'";
+		$data=mysqli_query($ketnoi,$sql);
+		$player=mysqli_fetch_array($data,MYSQLI_ASSOC);
 
 	#bắt pokemon
-	foreach($dspoke as $poke){
-		if($player['ToaDoX']==$poke['ToaDoX']&&$player['ToaDoY']==$poke['ToaDoY']){
+	 	foreach($_SESSION["dspokemon"] as $key=>$value){
+		if($player['ToaDoX']==$_SESSION["dspokemon"][$key]['ToaDoX']&&$player['ToaDoY']==$_SESSION["dspokemon"][$key]['ToaDoY']){
 			$IDplayer=$player['Id'];
 			$soluong=$player['SoLuongBat']+1;
-			$IDpoke=$poke['Id'];
+			$IDpoke=$_SESSION["dspokemon"][$key]['Id'];
 			date_default_timezone_set("Asia/Ho_Chi_Minh");	
 			$time= date("Y-m-d h:i:sa");
 			$sqldsbat="INSERT INTO `dsbat`(`MaNguoiChoi`, `MaPokemon`, `NgayBat`) VALUES ('$IDplayer','$IDpoke','$time')";
 			$sqlupdatesoluong = "UPDATE `nguoichoi` SET `SoLuongBat` = '$soluong'WHERE `nguoichoi`.`Id` = $id;";
+					$a=$key;
+				unset($_SESSION["dspokemon"][$a]);
 			$data=mysqli_query($ketnoi,$sqldsbat);
 			$data=mysqli_query($ketnoi,$sqlupdatesoluong);
 		}
 	};
+}
+else{
+		
+	$_SESSION["dspokemon"]=$dspoke;
+	$sql="select* from nguoichoi where Id='$id'";
+	$data=mysqli_query($ketnoi,$sql);
+	$player=mysqli_fetch_array($data,MYSQLI_ASSOC);
+		
+};
 	# giao diện
 $noidung="
  <table class='my-5'style='width:100%;border: 1px solid black;'>";
@@ -70,7 +80,7 @@ $noidung="
  	$noidung.= "<tr>";
  	for($j=1;$j<11;$j++){
  		 $noidung.="<td>";
- 		 foreach($dspoke as $poke){
+ 		 foreach($_SESSION["dspokemon"] as $poke){
  		 	$urlpoke=$poke['URLHinh'];
 	 		 if($poke['ToaDoX']==$j&& $poke['ToaDoY']==$i){
 	 		 	$noidung .= "<img class='poke' src='$urlpoke'>";

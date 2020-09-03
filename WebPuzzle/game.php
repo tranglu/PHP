@@ -2,6 +2,13 @@
 include_once("Noidungchung/Rieng/config/database.php");
 session_start();
  ?>
+
+ <?php 
+if (empty($_POST)){
+	$_SESSION["mangchon"]=array();
+	$_SESSION["mangmanhconlai"]=array();
+}
+  ?>
 <?php 
 #lấy dữ liệu mảnh ghép theo thể loại
 if(isset ($_GET["masp"])==true){
@@ -22,58 +29,17 @@ $manhghep="select* from manhghep
 $datasach=mysqli_query($ketnoi,$manhghep);
 $htmlDMS="";
 $dshinh=array();
+$dskiemtrachuan=array();
 while($hinhmanhghep=mysqli_fetch_array($datasach,MYSQLI_ASSOC)){
-array_push($dshinh,$hinhmanhghep);				   
+			array_push($dskiemtrachuan,$hinhmanhghep['URLMG']);
+			array_push($dshinh,$hinhmanhghep);				   
 }
 // tạo random mảnh ghép
-// lưu session mảnh đang chọn
-$dsmanhghepchon=array();
-if ($_POST) {
-foreach ($_POST['ID'] as $key =>$value) {
-    if ($_POST['chon'] == $value) {
-    			
-    	$idmanh = $_POST['chon'];
-    	$toadox = $_POST['toadox'][$key];	    	
-    	$toadoy = $_POST['toadoy'][$key];
-    	$linkmanh = $_POST['img'][$key];
-    	array_push($dsmanhghepchon,$idmanh);
-    	array_push($dsmanhghepchon,$toadox);
-    	array_push($dsmanhghepchon,$toadoy);
-    	array_push($dsmanhghepchon,$linkmanh);    	
-    	foreach ($_SESSION["mangmanhconlai"] as $key =>$value) {	
-    		if($value['MID']==$idmanh){
-    			$a= $key;   
-    			unset($_SESSION["mangmanhconlai"][$a]);						
-    		};
-    	}	
-    	array_push($_SESSION["mangchon"],$dsmanhghepchon);	
-    }  		
-}
-}
-else{$_SESSION["mangmanhconlai"]=$dshinh;}
-	shuffle($_SESSION["mangmanhconlai"]);		
-	// lưu session mảnh đang chọn	
-foreach ($_SESSION["mangmanhconlai"] as $ds) {
-	$id=$ds["MID"];
-	$linkhinh=$ds["URLMG"];
-    $hinhsach="<img class='img-fluid'src='$linkhinh'>";
-    $htmlDMS.="	  <input type='hidden' name='ID[]'value=".$id.">
-					  <input type='hidden' name='img[]'value=".$linkhinh.">
-					  <div class='col-3'>
-					  $hinhsach<br> 
-					  <div class='form-check'>
-					  <input class='form-check-input' type='radio' name='chon' value=".$id.">
-					  <label class='form-check-label' for='exampleRadios1'>
-					    Chọn
-					  </label>
-					</div>
-					Nhập tọa độ:<br>
-					X:<input type='number' class='form-control' name='toadox[]'>
-					Y:<input type='number' class='form-control' name='toadoy[]'>
-					<button type='submit' class='form-control'>Ghép</button>
-					  </div>";
-}
+
 ?> <!-- xong phần mảnh ghép-->
+  <?php 
+$backURL="game.php?masp=$idh";
+ ?>
 <!-- phần hình mẫu và khung -->
 <?php 
 #lấy dữ liệu hình to theo mã
@@ -99,8 +65,7 @@ while($dongDL1=mysqli_fetch_array($datahinh,MYSQLI_ASSOC))
 	$hinhsach<br> 
 	";
 		// tạo khung ghép theo số dòng cột của db
-if ($_POST) {
-	$khungghep=array();
+$khungghep=array();	
 	for ($i=0; $i < $dongDL1['Dong']; $i++) { 
 		for ($j=0; $j < $dongDL1['Cot']; $j++) {
 			$hinhmau=array();
@@ -111,86 +76,111 @@ if ($_POST) {
 			array_push($hinhmau,$y);
 			array_push($hinhmau,$url);
 			array_push($khungghep,$hinhmau);
-		}
-	}
-foreach($_SESSION["mangchon"] as $key =>$value){
-	foreach($khungghep as $kg=>$value){			
-	if($_SESSION["mangchon"][$key][1] == $khungghep[$kg][0] && 
-	$_SESSION["mangchon"][$key][2] == $khungghep[$kg][1]) {
-				array_pop($khungghep[$kg]);
-				array_push($khungghep[$kg],$_SESSION["mangchon"][$key][3]);		
-    }  	
-        }
-        }  
+}
+}		
+//tạo khung ghép rỗng
+if (empty($_POST)){
+	
+$_SESSION["khungghep"]=$khungghep;
+}
+	// lưu session mảnh đang chọn
+$dsmanhghepchon=array();
+if ($_POST&&isset($_POST['ID'])&&isset($_POST['chon'])) {
+foreach ($_POST['ID'] as $key =>$value) {
+    if ($_POST['chon'] == $value) {
+    			
+    	$idmanh = $_POST['chon'];
+    	$toadox = $_POST['toadox'][$key];	    	
+    	$toadoy = $_POST['toadoy'][$key];
+    	$linkmanh = $_POST['img'][$key];
+    	foreach($_SESSION["khungghep"] as $kg=>$value){			
+			if($toadox == $_SESSION["khungghep"][$kg][0] && $toadoy == $_SESSION["khungghep"][$kg][1]&&$_SESSION["khungghep"][$kg][2]==null) {
+				array_pop($_SESSION["khungghep"][$kg]);
+				array_push($_SESSION["khungghep"][$kg],$linkmanh);	 
+				// thêm hình vào khung ghép	
+				array_push($dsmanhghepchon,$idmanh);
+    			array_push($dsmanhghepchon,$toadox);
+    			array_push($dsmanhghepchon,$toadoy);
+    			array_push($dsmanhghepchon,$linkmanh);
+    			foreach ($_SESSION["mangmanhconlai"] as $key =>$value) {	
+    			if($value['MID']==$idmanh){
+    				$a= $key;  
+    				unset($_SESSION["mangmanhconlai"][$a]);					
+    			};
+    			}	
+    			array_push($_SESSION["mangchon"],$dsmanhghepchon);	
+    		} 
+        } 	
+    }  		
+}
 }
 else{
-$khungghep=array();
+	$_SESSION["mangmanhconlai"]=$dshinh;}
+	shuffle($_SESSION["mangmanhconlai"]);
+foreach ($_SESSION["mangmanhconlai"] as $ds) {
+	$id=$ds["MID"];
+	$linkhinh=$ds["URLMG"];
+    $hinhsach="<img class='img-fluid'src='$linkhinh'>";
+    $htmlDMS.="	  <input type='hidden' name='ID[]'value=".$id.">
+					  <input type='hidden' name='img[]'value=".$linkhinh.">
+					  <div class='col-3'>
+					  $hinhsach<br> 
+					  <div class='form-check'>
+					  <input class='form-check-input' type='radio' name='chon' value=".$id.">
+					  <label class='form-check-label' for='exampleRadios1'>
+					    Chọn
+					  </label>
+					</div>
+					Nhập tọa độ:<br>
+					X:<input type='number' class='form-control' name='toadox[]'>
+					Y:<input type='number' class='form-control' name='toadoy[]'>
+					<button type='submit' class='form-control'>Ghép</button>
+					  </div>";
+}							
+	// lưu session mảnh đang chọn	
+//tạo khung ghép rỗng
+}
+  ?> <!-- xong phần hình chính-->
+  <?php  		
+if (isset($_POST['mangkiemtra'])) {
+ 	
+	  	$a=0;
+	  	$n=count($dskiemtrachuan);
+	  for($i=0; $i < $n; $i++)	{
+	  	
+	  	if($_POST['mangkiemtra'][$i]==$dskiemtrachuan[$i]){
+	  		$a++;
+	  	};
+	  }
+	  if($a==$n){
+	  	echo"thành công";
+	  }
+			else{
+				echo" thất bại";
+				$_SESSION["khungghep"]=$khungghep;
+						echo "<pre>";
+						var_dump($_SESSION["khungghep"]);
+						echo "</pre>";
+			}		
+			 } 
 	
-	for ($i=0; $i < $dongDL1['Dong']; $i++) { 
-		for ($j=0; $j < $dongDL1['Cot']; $j++) {
-					$hinhmau=array();
-					$x=$i;
-					$y=$j;
-					$url="";
-					array_push($hinhmau,$x);
-					array_push($hinhmau,$y);
-					array_push($hinhmau,$url);
-					array_push($khungghep,$hinhmau);
-	}
-}
-}	
-}
-
+   mysqli_close($ketnoi);
+ ?> <!-- hết kiểm tra -->
+ <?php 
 $htmlKhung='<div class="row mb-5">';
-foreach($khungghep as $khung){
+
+foreach($_SESSION["khungghep"] as $khung){
 	$hinhmau=array();
 	$x=$khung[0];
 	$y=$khung[1];
 	$linkmanh=$khung[2];
-	// array_push($hinhmau,$x);
-	// array_push($hinhmau,$y);
-	// array_push($hinhmau,$linkmanh);
 	$htmlKhung.='<div class="nen col-6 border border-primary">
-				<input type="hidden" name="mang[]" value='.$x.'>
-				<input type="hidden" name="mang[]" value='.$y.'>
+				<input type="hidden" name="mangkiemtra[]" value='.$linkmanh.'>
 			<img class="img-fluid hinhchen w-100 h-100" src="'.$linkmanh.'">
 				</div>';
 }
-  ?> <!-- xong phần hình chính-->
-  <?php 
- 		// echo "<pre>";
- 		// var_dump($dshinh);
- 		// echo "</pre>";
- 		// 		echo "<pre>";
- 		// 		var_dump($khungghep);
- 		// 		echo "</pre>";
-if ($_POST) {
-	echo "<hr>";
-	echo __METHOD__.'</br>';
-	echo "<pre>";
-	var_dump($_POST);
-	echo "</pre>";
-	echo "<hr>";
-// for ($i=0; $i < $dongDL1['Dong']; $i++) {
-// 		foreach ($khungghep as $kg ) {
-// 			echo "<pre>";
-// 								var_dump($value['x']);
-// 								var_dump($value['y']);
-// 								var_dump($value['URLMG']);
-// 								echo "</pre>";
-			// if($value['x']==$kg[0]&&$value['y']==$kg[1]&&$value['URLMG']==$kg[2]){
-								
-			// 			echo " thành công";
-			// 		}
-				}
-			
-		
-		
-   
- ?> <!-- đang làm chổ này -->
-  <?php 
-$backURL="game.php?masp=$idh";
- ?>
+  ?>
+ 
 <!DOCTYPE html>
 <html>
 <head>

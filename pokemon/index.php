@@ -7,15 +7,10 @@ if (mysqli_connect_errno()==true) {
 	echo "lỗi kết nối";
 	exit();
 }
-		echo "<pre>";
-		var_dump($_SESSION);
-		echo "</pre>";
+	
 define("key","@abc");
 if (empty($_SESSION['Loggedin'])) {
 	$_SESSION['Loggedin'] = true;
-	echo "<pre>";
-		var_dump($_SESSION);
-		echo "</pre>";
 	$x=rand(1,10);
 	$y=rand(1,10);
 	date_default_timezone_set("Asia/Ho_Chi_Minh");	

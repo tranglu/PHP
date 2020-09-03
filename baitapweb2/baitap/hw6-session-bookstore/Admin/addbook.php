@@ -30,8 +30,6 @@ while($dongDL=mysqli_fetch_array($data,MYSQLI_ASSOC))
 {
   $id=$dongDL["ID"];
   $tenTL=$dongDL["TenTL"];
- 
-
   $htmlTL.="<option selected value='$id'>$tenTL</option>";
 }
 mysqli_close($ketnoi);

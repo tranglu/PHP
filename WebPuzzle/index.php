@@ -1,9 +1,13 @@
 <?php 
 define("key","@abc");
+#khởi tạo biến session
 session_start();
+date_default_timezone_set("Asia/Ho_Chi_Minh");	
+$_SESSION["timebatdau"]= date("Y-m-d h:i:sa");
 $_SESSION["mangchon"]=array();
 $_SESSION["mangmanhconlai"]=array();
-#Khỏi tạo các biến giao diện
+$_SESSION["khungghep"]=array();
+#Khởi tạo các biến giao diện
 $layout_area1="";
 $layout_area2="";
 $layout_area3="";
